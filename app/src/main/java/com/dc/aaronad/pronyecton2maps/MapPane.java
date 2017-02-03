@@ -34,6 +34,7 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
     private GoogleApiClient apiClient;
     Location mLastLocation;
     LatLng vigo = new LatLng(42.237007, -8.712806);
+    Marker marca;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
 
         // Establecer punto de entrada para la API de ubicación
         apiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
@@ -60,9 +62,9 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Marker marca;
+
         gMap = googleMap;
-        int radio = 6;
+        int radio = 20;
         CircleOptions circulo = new CircleOptions().center(vigo).radius(radio)
                 .strokeColor(Color.parseColor("#0D47A1")).strokeWidth(4)
                 .fillColor(Color.argb(32, 33, 150, 243));
@@ -74,12 +76,12 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
                 .title("FESTA RACHADA!!!"));
         CameraPosition cameraPosition = CameraPosition.builder()
                 .target(vigo)
-                .zoom(100)
+                .zoom(20)
                 .build();
 
         gMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-        marca.setVisible(true);
+        marca.setVisible(false);
         // Controles UI
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -100,7 +102,7 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
         gMap.getUiSettings().setZoomControlsEnabled(true);
 
         // Marcadores
-        gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)));
+        // gMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)));
 
 
     }
@@ -157,6 +159,8 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
         if (mLastLocation != null) {
+            mLastLocation.getLatitude();
+            mLastLocation.getLongitude();
             updateLocationUI();
 
         } else {
@@ -181,11 +185,12 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
 
     private void updateLocationUI() {
         TextView tv = (TextView) findViewById(R.id.tv);
-        System.out.println(String.valueOf(
-                distanciaCoord(vigo.latitude, vigo.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude())));
-        tv.setText(String.valueOf(
-                distanciaCoord(vigo.latitude, vigo.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude())
-        ));
+        if (distanciaCoord(vigo.latitude, vigo.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) <= 20) {
+            tv.setText(String.valueOf(
+                    distanciaCoord(vigo.latitude, vigo.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) + " m de distancia"
+            ));
+            marca.setVisible(true);
+        }
     }
 
     @Override
@@ -200,7 +205,7 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
 
     @Override
     public void onMapClick(LatLng latLng) {
-
+        updateLocationUI();
     }
 }
 
