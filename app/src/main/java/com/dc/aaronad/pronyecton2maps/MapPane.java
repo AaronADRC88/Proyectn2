@@ -33,8 +33,10 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
     private FirstMapFragment mFirstMapFragment;
     private GoogleApiClient apiClient;
     Location mLastLocation;
-    LatLng vigo = new LatLng(42.237007, -8.712806);
-    Marker marca;
+    LatLng pizza = new LatLng(42.237007, -8.712806);
+    LatLng smoke = new LatLng(42.237733, -8.715345);
+    LatLng burger = new LatLng(42.237453, -8.716391);
+    Marker marca, marcaFu, marcaBu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,23 +67,41 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
 
         gMap = googleMap;
         int radio = 20;
-        CircleOptions circulo = new CircleOptions().center(vigo).radius(radio)
+        CircleOptions circulo = new CircleOptions().center(pizza).radius(radio)
                 .strokeColor(Color.parseColor("#0D47A1")).strokeWidth(4)
                 .fillColor(Color.argb(32, 33, 150, 243));
         Circle zona = gMap.addCircle(circulo);
 
+        CircleOptions circle = new CircleOptions().center(smoke).radius(radio)
+                .strokeColor(Color.parseColor("#0D47A1")).strokeWidth(4)
+                .fillColor(Color.argb(32, 33, 150, 243));
+        Circle zona2 = gMap.addCircle(circle);
+
+        CircleOptions circl = new CircleOptions().center(burger).radius(radio)
+                .strokeColor(Color.parseColor("#0D47A1")).strokeWidth(4)
+                .fillColor(Color.argb(32, 33, 150, 243));
+        Circle zona3 = gMap.addCircle(circl);
+
 
         marca = gMap.addMarker(new MarkerOptions()
-                .position(vigo)
-                .title("FESTA RACHADA!!!"));
+                .position(pizza)
+                .title("PIZZAAAAAAA!!!"));
         CameraPosition cameraPosition = CameraPosition.builder()
-                .target(vigo)
+                .target(pizza)
                 .zoom(20)
                 .build();
 
         gMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
+        marcaFu = gMap.addMarker(new MarkerOptions()
+                .position(smoke)
+                .title("fuegoooo!!!"));
+        marcaBu = gMap.addMarker(new MarkerOptions()
+                .position(burger)
+                .title("Hamburguesaaaaa!!!"));
         marca.setVisible(false);
+        marcaFu.setVisible(false);
+        marcaBu.setVisible(false);
         // Controles UI
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -170,7 +190,7 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
 
     public static double distanciaCoord(double lat1, double lng1, double lat2, double lng2) {
         //double radioTierra = 3958.75;//en millas
-        double radioTierra = 6371;//en kilómetros
+        double radioTierra = 6371000;//en metros
         double dLat = Math.toRadians(lat2 - lat1);
         double dLng = Math.toRadians(lng2 - lng1);
         double sindLat = Math.sin(dLat / 2);
@@ -185,11 +205,23 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
 
     private void updateLocationUI() {
         TextView tv = (TextView) findViewById(R.id.tv);
-        if (distanciaCoord(vigo.latitude, vigo.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) <= 20) {
+        if (distanciaCoord(pizza.latitude, pizza.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) <= 20) {
             tv.setText(String.valueOf(
-                    distanciaCoord(vigo.latitude, vigo.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) + " m de distancia"
+                    distanciaCoord(pizza.latitude, pizza.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) + " m de distancia"
             ));
             marca.setVisible(true);
+        }
+        if (distanciaCoord(smoke.latitude, smoke.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) <= 20) {
+            tv.setText(String.valueOf(
+                    distanciaCoord(pizza.latitude, pizza.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) + " m de distancia"
+            ));
+            marcaFu.setVisible(true);
+        }
+        if (distanciaCoord(burger.latitude, burger.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) <= 20) {
+            tv.setText(String.valueOf(
+                    distanciaCoord(pizza.latitude, pizza.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) + " m de distancia"
+            ));
+            marcaBu.setVisible(true);
         }
     }
 
