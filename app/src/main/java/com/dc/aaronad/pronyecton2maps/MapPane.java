@@ -2,6 +2,7 @@ package com.dc.aaronad.pronyecton2maps;
 
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -37,6 +38,7 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
     LatLng smoke = new LatLng(42.237733, -8.715345);
     LatLng burger = new LatLng(42.237453, -8.716391);
     Marker marca, marcaFu, marcaBu;
+    Circle zona, zona2, zona3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,18 +72,18 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
         CircleOptions circulo = new CircleOptions().center(pizza).radius(radio)
                 .strokeColor(Color.parseColor("#0D47A1")).strokeWidth(4)
                 .fillColor(Color.argb(32, 33, 150, 243));
-        Circle zona = gMap.addCircle(circulo);
+        zona = gMap.addCircle(circulo);
 
         CircleOptions circle = new CircleOptions().center(smoke).radius(radio)
                 .strokeColor(Color.parseColor("#0D47A1")).strokeWidth(4)
                 .fillColor(Color.argb(32, 33, 150, 243));
-        Circle zona2 = gMap.addCircle(circle);
-
+        zona2 = gMap.addCircle(circle);
+        zona2.setVisible(false);
         CircleOptions circl = new CircleOptions().center(burger).radius(radio)
                 .strokeColor(Color.parseColor("#0D47A1")).strokeWidth(4)
                 .fillColor(Color.argb(32, 33, 150, 243));
-        Circle zona3 = gMap.addCircle(circl);
-
+        zona3 = gMap.addCircle(circl);
+        zona3.setVisible(false);
 
         marca = gMap.addMarker(new MarkerOptions()
                 .position(pizza)
@@ -210,18 +212,29 @@ public class MapPane extends AppCompatActivity implements OnMapReadyCallback, Go
                     distanciaCoord(pizza.latitude, pizza.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) + " m de distancia"
             ));
             marca.setVisible(true);
+            zona.setVisible(false);
+            zona2.setVisible(true);
         }
+
         if (distanciaCoord(smoke.latitude, smoke.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) <= 20) {
             tv.setText(String.valueOf(
                     distanciaCoord(pizza.latitude, pizza.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) + " m de distancia"
             ));
             marcaFu.setVisible(true);
+            zona2.setVisible(false);
+            zona3.setVisible(true);
         }
         if (distanciaCoord(burger.latitude, burger.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) <= 20) {
             tv.setText(String.valueOf(
                     distanciaCoord(pizza.latitude, pizza.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) + " m de distancia"
             ));
             marcaBu.setVisible(true);
+
+        }
+        if (distanciaCoord(burger.latitude, burger.longitude, mLastLocation.getLatitude(), mLastLocation.getLongitude()) == 0) {
+            Intent intent = new Intent(this, ScannerActivity.class);
+            int code = 4545; // Esto puede ser cualquier código.
+            startActivityForResult(intent, code);
         }
     }
 
